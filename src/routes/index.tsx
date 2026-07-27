@@ -1,24 +1,56 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Nav } from "@/components/portfolio/nav";
+import { Hero } from "@/components/portfolio/hero";
+import { Stats } from "@/components/portfolio/stats";
+import { Projects } from "@/components/portfolio/projects";
+import { LiveDemo } from "@/components/portfolio/live-demo";
+import { Expertise } from "@/components/portfolio/expertise";
+import { HowIThink } from "@/components/portfolio/how-i-think";
+import { Journey } from "@/components/portfolio/journey";
+import { Contact } from "@/components/portfolio/contact";
+import { Chatbot } from "@/components/portfolio/chatbot";
+import { profile } from "@/lib/portfolio-data";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Mohanad Ashraf — Machine Learning Engineer" },
+      {
+        name: "description",
+        content:
+          "Machine Learning Engineer in Cairo building real-time computer vision systems: YOLO tracking pipelines, 98.5% mAP detection models, and deployed ML dashboards.",
+      },
+      { property: "og:title", content: "Mohanad Ashraf — Machine Learning Engineer" },
+      {
+        property: "og:description",
+        content:
+          "Real-time computer vision, NLP and recommendation systems — from custom tracking algorithms to deployed dashboards.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background text-foreground">
+      <Nav />
+      <main>
+        <Hero />
+        <Stats />
+        <Projects />
+        <LiveDemo />
+        <Expertise />
+        <HowIThink />
+        <Journey />
+        <Contact />
+      </main>
+      <footer className="mono-label border-t border-border px-6 py-8 text-center text-muted-foreground">
+        © {new Date().getFullYear()} {profile.name} — built with React, TanStack Start & Tailwind.
+      </footer>
+      <Chatbot />
     </div>
   );
 }
