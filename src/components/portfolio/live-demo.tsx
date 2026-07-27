@@ -146,7 +146,7 @@ export function LiveDemo() {
                         width: `${b.w}%`,
                         height: `${b.h}%`,
                         boxShadow: "0 0 0 1px var(--glow), 0 0 30px -6px var(--glow)",
-                        animation: `fade-in 0.4s ease-out ${i * 0.12}s both`,
+                        animation: `det-in 0.4s ease-out ${i * 0.12}s both`,
                       }}
                     >
                       <span className="mono-label absolute -top-6 left-0 whitespace-nowrap rounded bg-primary px-1.5 py-0.5 text-[0.6rem] text-primary-foreground">
@@ -192,7 +192,7 @@ export function LiveDemo() {
                 <div
                   key={i}
                   className="mono-label flex items-center justify-between rounded-lg bg-panel-2 px-3 py-2 text-[0.62rem]"
-                  style={{ animation: `fade-in 0.4s ease-out ${i * 0.1}s both` }}
+                  style={{ animation: `det-in 0.4s ease-out ${i * 0.1}s both` }}
                 >
                   <span className="text-foreground">
                     #{i + 1} {b.label}
