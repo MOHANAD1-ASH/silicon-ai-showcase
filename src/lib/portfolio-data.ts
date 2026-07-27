@@ -104,8 +104,9 @@ export const expertise = [
       "Scikit-learn",
       "PyTorch",
       "TensorFlow",
+      "Keras",
       "CNNs",
-      "Boosting",
+      "Boosting & Ensembles",
       "Hyperparameter Tuning",
       "Feature Engineering",
       "Model Evaluation",
@@ -116,33 +117,54 @@ export const expertise = [
     items: [
       "YOLO v5-v11 / YOLO26",
       "RT-DETR",
+      "Vision Transformers",
       "OpenCV",
       "ByteTrack",
       "Kalman Filtering",
+      "Image Classification",
       "Transfer Learning",
       "RoboFlow",
     ],
   },
   {
-    category: "Tools & Frameworks",
+    category: "NLP & Generative AI",
+    items: [
+      "Hugging Face Transformers",
+      "Text Preprocessing",
+      "Embeddings",
+      "RAG Applications",
+      "LLM Prompting",
+    ],
+  },
+  {
+    category: "Data & Analytics",
     items: [
       "Python",
       "Pandas",
       "NumPy",
-      "Hugging Face",
+      "EDA",
+      "Statistics & Probability",
       "MySQL",
       "PostgreSQL",
-      "Git & GitHub",
       "Power BI",
     ],
   },
   {
     category: "Deployment & MLOps",
-    items: ["Streamlit", "FastAPI", "Docker", "Azure AI Fundamentals", "RAG Apps", "Jupyter"],
+    items: [
+      "Streamlit",
+      "FastAPI",
+      "Docker",
+      "MLflow",
+      "Microsoft Azure AI",
+      "Git & GitHub",
+      "Jupyter",
+    ],
   },
 ];
 
 export const thinkingSteps = [
+
   {
     step: "01",
     title: "Understand the problem",
@@ -183,9 +205,11 @@ export const timeline = [
     role: "AI & Data Science Track",
     org: "EM Business Solutions Scholarship",
     points: [
-      "Project-based training across AI, Data Science and ML workflows.",
-      "Built ML and deep learning models with Scikit-learn, PyTorch, YOLO and Transformers.",
-      "Developed NLP and Generative AI applications using Hugging Face and RAG.",
+      "Completed intensive project-based training across AI, Data Science and ML workflows.",
+      "Built ML and deep learning models with Scikit-learn and PyTorch, including feature engineering and model optimisation.",
+      "Developed NLP and Generative AI applications using Hugging Face and RAG-based approaches.",
+      "Applied computer vision: image processing, classification, object detection (YOLO), object tracking (ByteTrack) and Vision Transformers.",
+      "Deployed ML applications with Streamlit and FastAPI, with hands-on exposure to Docker.",
     ],
   },
   {
@@ -193,8 +217,10 @@ export const timeline = [
     role: "Machine Learning Intern",
     org: "Elevvo Pathways",
     points: [
-      "Applied supervised learning - classification and regression - with Python and Scikit-learn.",
-      "Preprocessing, EDA, feature engineering and evaluation on real-world datasets.",
+      "Built and optimised end-to-end ML and deep learning pipelines for classification, regression and clustering problems.",
+      "Applied core ML techniques with Scikit-learn and developed deep learning models with TensorFlow and Keras.",
+      "Conducted data preprocessing, feature engineering and model evaluation, including image resizing for computer vision tasks.",
+      "Developed and fine-tuned CNN architectures, leveraging transfer learning for high accuracy on image classification benchmarks.",
     ],
   },
   {
@@ -202,9 +228,11 @@ export const timeline = [
     role: "Machine Learning Engineer Track",
     org: "Digital Egypt Pioneers Initiative (DEPI)",
     points: [
-      "ML and deep learning models on real computer vision and NLP datasets.",
-      "End-to-end pipelines covering preprocessing, training and evaluation.",
-      "MLOps concepts, deployment workflows and Azure AI cloud fundamentals.",
+      "Completed intensive training covering the full AI lifecycle, from data preprocessing to model deployment.",
+      "Performed data preprocessing, feature engineering and EDA with Pandas, NumPy and Scikit-learn.",
+      "Implemented ML algorithms (regression, classification, clustering) and built deep learning models for predictive tasks using neural network architectures.",
+      "Applied NLP techniques for text analysis and computer vision methods for image-based tasks.",
+      "Gained hands-on experience deploying models with MLflow, MLOps practices and Microsoft Azure AI services.",
     ],
   },
   {

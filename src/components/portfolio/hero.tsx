@@ -1,5 +1,6 @@
 import { ArrowUpRight, Play, Mail } from "lucide-react";
 import { profile } from "@/lib/portfolio-data";
+import portrait from "@/assets/mohanad-portrait.jpg.asset.json";
 import { ParticleField } from "./particle-field";
 
 export function Hero() {
@@ -19,7 +20,8 @@ export function Hero() {
         <ParticleField />
       </div>
 
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1fr_auto]">
+        <div className="min-w-0">
         <span className="mono-label inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-primary">
           <span className="relative flex h-1.5 w-1.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
@@ -62,6 +64,25 @@ export function Hero() {
           </a>
         </div>
 
+        </div>
+
+        <div className="relative order-first mx-auto w-40 shrink-0 sm:w-52 md:order-none md:w-60">
+          <div
+            aria-hidden
+            className="absolute -inset-6 rounded-full blur-2xl"
+            style={{
+              background: "radial-gradient(circle at 50% 40%, var(--glow), transparent 70%)",
+            }}
+          />
+          <img
+            src={portrait.url}
+            alt={`${profile.name}, Machine Learning Engineer`}
+            className="relative aspect-square w-full rounded-full border border-primary/30 object-cover shadow-[0_24px_70px_-30px_var(--glow)]"
+          />
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl">
         <dl className="mt-16 grid max-w-3xl grid-cols-2 gap-x-8 gap-y-6 border-t border-border pt-8 sm:grid-cols-4">
           {[
             ["Focus", "Computer Vision"],

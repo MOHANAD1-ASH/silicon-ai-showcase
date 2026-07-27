@@ -1,83 +1,124 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Cpu, RefreshCw, Upload, Zap } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Camera, Cpu, RefreshCw, Upload, Zap } from "lucide-react";
 import { Section } from "./section";
 
-type Box = { x: number; y: number; w: number; h: number; label: string; conf: number };
-
-const LABELS = ["person", "laptop", "phone", "focus_zone", "keyboard"];
-
-function makeBoxes(seed: number): Box[] {
-  const rnd = (n: number) => {
-    const x = Math.sin(seed * 9301 + n * 49297) * 233280;
-    return x - Math.floor(x);
-  };
-  const count = 3 + Math.floor(rnd(1) * 2);
-  return Array.from({ length: count }, (_, i) => ({
-    x: 6 + rnd(i + 2) * 55,
-    y: 8 + rnd(i + 9) * 50,
-    w: 18 + rnd(i + 17) * 26,
-    h: 18 + rnd(i + 23) * 30,
-    label: LABELS[Math.floor(rnd(i + 31) * LABELS.length)],
-    conf: 0.72 + rnd(i + 41) * 0.27,
-  }));
-}
+type Det = { bbox: [number, number, number, number]; class: string; score: number };
+type Media = { url: string; type: "image" | "video" } | null;
 
 export function LiveDemo() {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const [file, setFile] = useState<{ url: string; type: "image" | "video"; name: string } | null>(
-    null,
-  );
-  const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
-  const [progress, setProgress] = useState(0);
-  const [seed, setSeed] = useState(1);
-  const [fps, setFps] = useState(0);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const wrapRef = useRef<HTMLDivElement | null>(null);
+  const modelRef = useRef<unknown>(null);
+  const rafRef = useRef(0);
+  const streamRef = useRef<MediaStream | null>(null);
 
-  const boxes = useMemo(() => makeBoxes(seed), [seed]);
+  const [media, setMedia] = useState<Media>(null);
+  const [webcam, setWebcam] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "running" | "error">("idle");
+  const [dets, setDets] = useState<Det[]>([]);
+  const [latency, setLatency] = useState(0);
+  const [size, setSize] = useState({ w: 1, h: 1 });
 
-  useEffect(() => {
-    return () => {
-      if (file) URL.revokeObjectURL(file.url);
+  const loadModel = useCallback(async () => {
+    if (modelRef.current) return modelRef.current;
+    setStatus("loading");
+    const tf = await import("@tensorflow/tfjs");
+    await tf.ready();
+    const cocoSsd = await import("@tensorflow-models/coco-ssd");
+    modelRef.current = await cocoSsd.load({ base: "lite_mobilenet_v2" });
+    return modelRef.current;
+  }, []);
+
+  const detectOnce = useCallback(async (el: HTMLImageElement | HTMLVideoElement) => {
+    const model = (await loadModel()) as {
+      detect: (e: HTMLImageElement | HTMLVideoElement) => Promise<Det[]>;
     };
-  }, [file]);
+    const t0 = performance.now();
+    const out = await model.detect(el);
+    setLatency(performance.now() - t0);
+    setDets(out.filter((d) => d.score > 0.45));
+  }, [loadModel]);
 
-  useEffect(() => {
-    if (phase !== "running") return;
-    setProgress(0);
-    const started = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      const t = Math.min((now - started) / 1800, 1);
-      setProgress(t * 100);
-      if (t < 1) raf = requestAnimationFrame(tick);
-      else setPhase("done");
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [phase, seed]);
+  const runImage = useCallback(async () => {
+    const el = imgRef.current;
+    if (!el) return;
+    try {
+      setStatus("running");
+      setSize({ w: el.naturalWidth, h: el.naturalHeight });
+      await detectOnce(el);
+      setStatus("ready");
+    } catch {
+      setStatus("error");
+    }
+  }, [detectOnce]);
 
-  useEffect(() => {
-    if (phase !== "done") return;
-    const id = window.setInterval(() => setFps(58 + Math.random() * 8), 420);
-    return () => window.clearInterval(id);
-  }, [phase]);
+  const loopVideo = useCallback(async () => {
+    const el = videoRef.current;
+    if (!el) return;
+    try {
+      setStatus("running");
+      setSize({ w: el.videoWidth || 1, h: el.videoHeight || 1 });
+      await loadModel();
+      const step = async () => {
+        if (!videoRef.current) return;
+        await detectOnce(videoRef.current);
+        rafRef.current = requestAnimationFrame(() => void step());
+      };
+      void step();
+    } catch {
+      setStatus("error");
+    }
+  }, [detectOnce, loadModel]);
+
+  const stopAll = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  }, []);
+
+  useEffect(() => () => stopAll(), [stopAll]);
 
   const onPick = (f: File | undefined) => {
     if (!f) return;
-    const type = f.type.startsWith("video") ? "video" : "image";
-    setFile({ url: URL.createObjectURL(f), type, name: f.name });
-    setSeed((s) => s + 1);
-    setPhase("running");
+    stopAll();
+    setWebcam(false);
+    setDets([]);
+    setMedia({ url: URL.createObjectURL(f), type: f.type.startsWith("video") ? "video" : "image" });
   };
+
+  const startWebcam = async () => {
+    try {
+      stopAll();
+      setMedia(null);
+      setDets([]);
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+      streamRef.current = stream;
+      setWebcam(true);
+      requestAnimationFrame(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          void videoRef.current.play();
+        }
+      });
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  const showVideo = webcam || media?.type === "video";
 
   return (
     <Section
       id="demo"
       label="Live demo"
-      title="Run a simulated detection pass"
-      subtitle="Drop in an image or short clip and watch the inference overlay render. This runs a visual simulation of my YOLO pipeline in the browser — no upload leaves your device."
+      title="Real object detection, running in your browser"
+      subtitle="A real convolutional detector (COCO-SSD on TensorFlow.js) runs fully on your device — upload an image or clip, or open your webcam. Nothing is uploaded anywhere."
     >
       <div className="reveal grid gap-6 lg:grid-cols-[1.6fr_1fr]">
         <div
+          ref={wrapRef}
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
             e.preventDefault();
@@ -85,7 +126,7 @@ export function LiveDemo() {
           }}
           className="surface relative aspect-video overflow-hidden rounded-2xl"
         >
-          {!file ? (
+          {!media && !webcam ? (
             <button
               onClick={() => inputRef.current?.click()}
               className="group grid h-full w-full place-items-center gap-3 px-6 text-center"
@@ -95,68 +136,67 @@ export function LiveDemo() {
               </span>
               <span className="font-display text-lg font-semibold">Drop an image or video</span>
               <span className="mono-label text-muted-foreground">
-                or click to browse · processed locally
+                or click to browse · inference runs on-device
               </span>
             </button>
-          ) : (
-            <>
-              {file.type === "image" ? (
-                <img src={file.url} alt="Uploaded preview" className="h-full w-full object-cover" />
-              ) : (
-                <video
-                  src={file.url}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="h-full w-full object-cover"
-                />
-              )}
-              <div className="absolute inset-0 bg-background/20" />
+          ) : null}
 
-              {phase === "running" ? (
-                <>
+          {media?.type === "image" ? (
+            <img
+              ref={imgRef}
+              src={media.url}
+              alt="Frame being analysed by the detector"
+              onLoad={() => void runImage()}
+              className="h-full w-full object-contain"
+            />
+          ) : null}
+
+          {showVideo ? (
+            <video
+              ref={videoRef}
+              src={media?.url}
+              autoPlay
+              loop
+              muted
+              playsInline
+              onLoadedData={() => void loopVideo()}
+              className="h-full w-full object-contain"
+            />
+          ) : null}
+
+          {(media || webcam) && size.w > 1 ? (
+            <div className="pointer-events-none absolute inset-0">
+              <div
+                className="relative mx-auto h-full"
+                style={{ aspectRatio: `${size.w} / ${size.h}`, maxWidth: "100%" }}
+              >
+                {dets.map((d, i) => (
                   <div
-                    aria-hidden
-                    className="absolute inset-x-0 h-0.5 bg-primary shadow-[0_0_24px_4px_var(--glow)]"
-                    style={{ animation: "scanline 1.1s linear infinite" }}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 p-4">
-                    <div className="mono-label mb-2 text-primary">
-                      running inference… {progress.toFixed(0)}%
-                    </div>
-                    <div className="h-1 w-full overflow-hidden rounded-full bg-background/70">
-                      <div
-                        className="h-full rounded-full bg-primary transition-[width] duration-100"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
+                    key={`${d.class}-${i}`}
+                    className="absolute rounded-md border-2 border-primary/90"
+                    style={{
+                      left: `${(d.bbox[0] / size.w) * 100}%`,
+                      top: `${(d.bbox[1] / size.h) * 100}%`,
+                      width: `${(d.bbox[2] / size.w) * 100}%`,
+                      height: `${(d.bbox[3] / size.h) * 100}%`,
+                      boxShadow: "0 0 0 1px var(--glow), 0 0 30px -6px var(--glow)",
+                    }}
+                  >
+                    <span className="mono-label absolute -top-6 left-0 whitespace-nowrap rounded bg-primary px-1.5 py-0.5 text-[0.6rem] text-primary-foreground">
+                      {d.class} {(d.score * 100).toFixed(1)}%
+                    </span>
                   </div>
-                </>
-              ) : null}
+                ))}
+              </div>
+            </div>
+          ) : null}
 
-              {phase === "done"
-                ? boxes.map((b, i) => (
-                    <div
-                      key={i}
-                      className="absolute rounded-md border-2 border-primary/90"
-                      style={{
-                        left: `${b.x}%`,
-                        top: `${b.y}%`,
-                        width: `${b.w}%`,
-                        height: `${b.h}%`,
-                        boxShadow: "0 0 0 1px var(--glow), 0 0 30px -6px var(--glow)",
-                        animation: `det-in 0.4s ease-out ${i * 0.12}s both`,
-                      }}
-                    >
-                      <span className="mono-label absolute -top-6 left-0 whitespace-nowrap rounded bg-primary px-1.5 py-0.5 text-[0.6rem] text-primary-foreground">
-                        {b.label} {(b.conf * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  ))
-                : null}
-            </>
-          )}
+          {status === "loading" ? (
+            <div className="absolute inset-x-0 bottom-0 p-4">
+              <div className="mono-label text-primary">loading detector weights…</div>
+            </div>
+          ) : null}
+
           <input
             ref={inputRef}
             type="file"
@@ -172,14 +212,17 @@ export function LiveDemo() {
           </div>
           <dl className="mt-6 space-y-4">
             {[
-              ["model", phase === "done" ? "yolo-v11n (sim)" : "—"],
-              ["device", phase === "done" ? "Tesla T4" : "—"],
-              ["latency", phase === "done" ? "16 ms" : "—"],
-              ["fps", phase === "done" ? fps.toFixed(1) : "—"],
-              ["detections", phase === "done" ? String(boxes.length) : "—"],
-              ["conf. threshold", "0.55"],
+              ["model", "coco-ssd · lite_mobilenet_v2"],
+              ["runtime", "TensorFlow.js (WebGL)"],
+              ["latency", latency ? `${latency.toFixed(0)} ms` : "—"],
+              ["fps", latency ? (1000 / latency).toFixed(1) : "—"],
+              ["detections", dets.length ? String(dets.length) : "—"],
+              ["conf. threshold", "0.45"],
             ].map(([k, v]) => (
-              <div key={k} className="flex items-baseline justify-between gap-4 border-b border-border pb-2">
+              <div
+                key={k}
+                className="flex items-baseline justify-between gap-4 border-b border-border pb-2"
+              >
                 <dt className="mono-label text-muted-foreground">{k}</dt>
                 <dd className="font-display text-sm font-semibold text-foreground">{v}</dd>
               </div>
@@ -187,27 +230,28 @@ export function LiveDemo() {
           </dl>
 
           <div className="mt-6 flex-1 space-y-2 overflow-hidden">
-            {phase === "done" ? (
-              boxes.map((b, i) => (
+            {dets.length ? (
+              dets.map((d, i) => (
                 <div
-                  key={i}
+                  key={`${d.class}-log-${i}`}
                   className="mono-label flex items-center justify-between rounded-lg bg-panel-2 px-3 py-2 text-[0.62rem]"
-                  style={{ animation: `det-in 0.4s ease-out ${i * 0.1}s both` }}
                 >
                   <span className="text-foreground">
-                    #{i + 1} {b.label}
+                    #{i + 1} {d.class}
                   </span>
-                  <span className="text-primary">{(b.conf * 100).toFixed(1)}%</span>
+                  <span className="text-primary">{(d.score * 100).toFixed(1)}%</span>
                 </div>
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
-                Upload a frame to populate the detection log.
+                {status === "error"
+                  ? "Couldn't start the detector on this device — try another browser or input."
+                  : "Upload a frame or start the webcam to populate the detection log."}
               </p>
             )}
           </div>
 
-          <div className="mt-6 flex gap-2">
+          <div className="mt-6 flex flex-wrap gap-2">
             <button
               onClick={() => inputRef.current?.click()}
               className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
@@ -215,19 +259,22 @@ export function LiveDemo() {
               <Upload className="h-4 w-4" /> Upload
             </button>
             <button
-              disabled={!file}
-              onClick={() => {
-                setSeed((s) => s + 1);
-                setPhase("running");
-              }}
+              onClick={() => void startWebcam()}
+              className="surface inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold"
+            >
+              <Camera className="h-4 w-4" /> Webcam
+            </button>
+            <button
+              disabled={!media || media.type !== "image"}
+              onClick={() => void runImage()}
               className="surface inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold disabled:opacity-40"
             >
               <RefreshCw className="h-4 w-4" /> Re-run
             </button>
           </div>
           <p className="mono-label mt-4 flex items-center gap-2 text-[0.6rem] text-muted-foreground">
-            <Zap className="h-3 w-3 text-accent" /> Simulated output — real pipeline lives in the
-            GitHub repos.
+            <Zap className="h-3 w-3 text-accent" /> Real on-device inference — my custom YOLO
+            pipelines live in the GitHub repos.
           </p>
         </div>
       </div>
