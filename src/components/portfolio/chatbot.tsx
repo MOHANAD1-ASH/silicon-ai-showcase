@@ -42,7 +42,7 @@ export function Chatbot() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: next.filter((m) => m.role !== "assistant" || true) }),
+        body: JSON.stringify({ messages: next }),
       });
       if (!res.ok) throw new Error(await res.text());
       const data = (await res.json()) as { reply: string };
