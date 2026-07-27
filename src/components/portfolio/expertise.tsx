@@ -1,8 +1,8 @@
-import { Brain, Eye, Wrench, Rocket } from "lucide-react";
+import { Code2, Brain, Eye, MessageSquareText, Rocket, BarChart3 } from "lucide-react";
 import { expertise } from "@/lib/portfolio-data";
 import { Section } from "./section";
 
-const icons = [Brain, Eye, Wrench, Rocket];
+const icons = [Code2, Brain, Eye, MessageSquareText, Rocket, BarChart3];
 
 export function Expertise() {
   return (
