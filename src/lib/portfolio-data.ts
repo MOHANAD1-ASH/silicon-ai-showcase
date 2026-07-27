@@ -157,7 +157,6 @@ export const expertise = [
   },
   {
     category: "Data Analysis & Visualization",
-    "Data Analysis & Visualization",
     items: [
       "Pandas",
       "NumPy",
