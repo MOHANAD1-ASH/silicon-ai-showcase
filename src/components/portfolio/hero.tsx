@@ -49,11 +49,11 @@ export function Hero() {
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
           <a
-            href="#demo"
+            href="#expertise"
             className="surface group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold hover:border-accent hover:text-accent"
           >
             <Play className="h-4 w-4" />
-            Live Demo
+            Technical Skills
           </a>
           <a
             href="#contact"
