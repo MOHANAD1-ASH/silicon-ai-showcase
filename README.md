@@ -4,7 +4,7 @@ I want you to redesign and upgrade my portfolio into a highly interactive, moder
 
 The portfolio should feel like a Silicon Valley level personal website, not a basic static portfolio.
 
-## 🎯 Goal
+## Goal
 
 Create a portfolio that:
 
@@ -20,7 +20,7 @@ Create a portfolio that:
 
 
 
-## 🎨 Design Style
+## Design Style
 
 - Dark mode by default (very important)
 
@@ -34,7 +34,7 @@ Create a portfolio that:
 
 ---
 
-## 🌗 Add Theme Toggle
+## Add Theme Toggle
 
 - Add a Dark / Light mode toggle button
 
@@ -44,7 +44,7 @@ Create a portfolio that:
 
 ---
 
-## 🚀 Sections to Include
+## Sections to Include
 
 ### 1. Hero Section
 
@@ -57,8 +57,6 @@ Create a portfolio that:
 - CTA buttons:
 
   - View Projects
-
-  - Live Demo
 
   - Contact
 
@@ -88,17 +86,7 @@ On hover:
 
 ---
 
-### 3. Live Demo Section (Important)
-
-- Allow user to upload a video or image
-
-- Display a mock or real detection result
-
-- If real backend is not available, simulate results visually
-
----
-
-### 4. Technical Expertise
+### 3. Technical Expertise
 
 Organize in categories:
 
@@ -120,7 +108,7 @@ Display as:
 
 ---
 
-### 5. How I Think (Important Section)
+### 4. How I Think (Important Section)
 
 Create a section explaining my workflow:
 
@@ -138,7 +126,7 @@ Make it visually engaging (steps or timeline)
 
 ---
 
-### 6. Stats Section
+### 5. Stats Section
 
 Add animated counters:
 
@@ -150,7 +138,7 @@ Add animated counters:
 
 ---
 
-### 7. Contact Section
+### 6. Contact Section
 
 - Email
 
@@ -160,7 +148,7 @@ Add animated counters:
 
 ---
 
-## 🎬 Animations
+## Animations
 
 - Smooth scroll animations
 
@@ -172,7 +160,7 @@ Add animated counters:
 
 ---
 
-## ⚙️ Technical Requirements
+## Technical Requirements
 
 - Use HTML, CSS, and JavaScript (or React if preferred)
 
@@ -184,7 +172,7 @@ Add animated counters:
 
 ---
 
-## 💥 Extra Features (if possible)
+## Extra Features (if possible)
 
 - Add an AI chatbot that answers questions about me
 
@@ -194,7 +182,7 @@ Add animated counters:
 
 ---
 
-## 🔥 Final Output
+## Final Output
 
 The result should feel like:
 
@@ -228,3 +216,4 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
