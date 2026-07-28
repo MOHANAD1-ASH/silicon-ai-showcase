@@ -58,6 +58,7 @@ export const featuredProjects: FeaturedProject[] = [
     stack: ["Python", "YOLO", "RT-DETR", "OpenCV", "Streamlit"],
     highlights: [
       "Recorded and annotated a 900-image dataset across multiple camera angles, backgrounds and desk setups.",
+      "Recorded and annotated a 900-image my own dataset across multiple camera angles, backgrounds and desk setups.",
       "Benchmarked YOLO vs. RT-DETR - YOLO chosen for ~2x faster inference at comparable accuracy.",
       "Rule-based alert engine with configurable timers to flag sustained distraction in real time.",
       "Detections cross-validated against mouse and keyboard activity to suppress false alerts.",
@@ -72,7 +73,7 @@ export const moreProjects = [
     blurb:
       "Classification pipeline on GTSRB (43 classes, 50k+ images). Custom CNN and MobileNet transfer learning at 97%+ accuracy.",
     tags: "CNN · MobileNet · TensorFlow",
-    link: "https://github.com/MOHANAD1-ASH/Elevvo-projects/tree/main/elevvo_project_3",
+    link: "https://github.com/MOHANAD1-ASH/Elevvo-projects/tree/main/elevvo_project_4",
   },
   {
     title: "Cardiovascular Disease Prediction",
@@ -86,7 +87,7 @@ export const moreProjects = [
     blurb:
       "Collaborative filtering engine using KNN and cosine similarity across 100,000+ ratings, optimised for personalised suggestions.",
     tags: "Python · Collaborative Filtering",
-    link: "https://github.com/MOHANAD1-ASH/Elevvo-projects/tree/main/elevvo_project_4",
+    link: "https://github.com/MOHANAD1-ASH/Elevvo-projects/tree/main/elevvo_project_3",
   },
   {
     title: "Restaurant Sales Forecasting",
@@ -104,9 +105,9 @@ export const expertise = [
       "Python",
       "SQL (MySQL, PostgreSQL)",
       "Git & GitHub",
-      "Docker",
       "Jupyter Notebook",
       "VS Code",
+      "Colab",
     ],
   },
   {
@@ -142,6 +143,7 @@ export const expertise = [
     category: "NLP & Generative AI",
     items: [
       "Hugging Face Transformers",
+      "Fine-tuning Pre-trained Models",
       "RAG-based applications",
       "Text Classification",
     ],
