@@ -57,7 +57,6 @@ export const featuredProjects: FeaturedProject[] = [
     model: "YOLO (benchmarked vs. RT-DETR)",
     stack: ["Python", "YOLO", "RT-DETR", "OpenCV", "Streamlit"],
     highlights: [
-      "Recorded and annotated a 900-image dataset across multiple camera angles, backgrounds and desk setups.",
       "Recorded and annotated a 900-image my own dataset across multiple camera angles, backgrounds and desk setups.",
       "Benchmarked YOLO vs. RT-DETR - YOLO chosen for ~2x faster inference at comparable accuracy.",
       "Rule-based alert engine with configurable timers to flag sustained distraction in real time.",
