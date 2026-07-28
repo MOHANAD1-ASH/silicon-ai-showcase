@@ -177,7 +177,7 @@ export const thinkingSteps = [
   {
     step: "02",
     title: "Analyse the data",
-    body: "EDA, class balance, leakage checks, annotation quality. When the dataset doesn't exist, I record and annotate it myself, as I did for the 900-image productivity dataset.",
+    body: "EDA, class balance, leakage checks, annotation or label quality. When the dataset doesn't exist, I collect and annotate it myself, whether that's images, text, or tabular records.",
   },
   {
     step: "03",
@@ -187,12 +187,12 @@ export const thinkingSteps = [
   {
     step: "04",
     title: "Iterate & optimise",
-    body: "Architecture benchmarks (YOLO vs. RT-DETR), augmentation, tuning, and custom logic such as Kalman gating and Hungarian ID stitching when off-the-shelf tools fall short.",
+    body: "Architecture benchmarks (classic ML vs. deep nets, CNNs vs. transformers), augmentation, tuning, and custom logic whenever off-the-shelf tools fall short.",
   },
   {
     step: "05",
     title: "Deploy & evaluate",
-    body: "Streamlit or FastAPI, latency budgets measured on real hardware, and monitoring that tells me when reality drifts away from the validation set.",
+    body: "Streamlit or FastAPI, latency and resource budgets measured on real hardware, and monitoring that tells me when reality drifts away from the validation set.",
   },
 ];
 
