@@ -12,8 +12,8 @@ export function Contact() {
           Ready to build <span className="text-gradient">intelligent systems</span> together?
         </h2>
         <p className="mt-5 text-muted-foreground">
-          Open to opportunities in machine learning, computer vision and robotics software
-          engineering.
+          Open to opportunities in machine learning, computer vision, NLP and
+          end-to-end AI systems.
         </p>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
           <a
