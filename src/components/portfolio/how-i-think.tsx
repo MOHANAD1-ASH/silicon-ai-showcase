@@ -6,7 +6,7 @@ export function HowIThink() {
     <Section
       id="process"
       label="How I think"
-      title="From ambiguous problem to shipped model"
+      title="From understanding the problem to shipped model"
       subtitle="The loop I run on every project, whether it's a tracking pipeline or a tabular classifier."
     >
       <ol className="relative space-y-4 border-l border-border pl-6 md:pl-10">

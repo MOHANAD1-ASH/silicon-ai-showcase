@@ -1,6 +1,6 @@
 import { ArrowUpRight, Play, Mail } from "lucide-react";
 import { profile } from "@/lib/portfolio-data";
-import portrait from "@/public/mohanad-portrait.jpg";
+import portrait from "@/assets/mohanad-portrait.jpg.asset.json";
 import { ParticleField } from "./particle-field";
 
 export function Hero() {
