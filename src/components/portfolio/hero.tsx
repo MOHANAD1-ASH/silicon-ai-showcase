@@ -1,6 +1,6 @@
 import { ArrowUpRight, Play, Mail } from "lucide-react";
 import { profile } from "@/lib/portfolio-data";
-import portrait from "@/assets/mohanad-portrait.jpg.asset.json";
+import portrait from "@/assets/mohanad-portrait.jpg";
 import { ParticleField } from "./particle-field";
 
 export function Hero() {
@@ -75,7 +75,7 @@ export function Hero() {
             }}
           />
           <img
-            src={portrait.url}
+            src={portrait}
             alt={`${profile.name}, Machine Learning Engineer`}
             className="relative aspect-square w-full rounded-full border border-primary/30 object-cover shadow-[0_24px_70px_-30px_var(--glow)]"
           />
