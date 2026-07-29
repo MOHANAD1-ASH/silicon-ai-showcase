@@ -36,8 +36,8 @@ export function Hero() {
         <p className="mono-label mt-4 text-base text-accent sm:text-lg">{profile.title}</p>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-          {profile.tagline} Computer vision, NLP and recommendation systems — from custom tracking
-          algorithms written from scratch to deployed, monitored dashboards.
+          {profile.tagline} Specialized in Computer Vision, NLP, and Recommendation Systems — 
+          from problem formulation and modeling to scalable deployment and real-time monitoring
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">
