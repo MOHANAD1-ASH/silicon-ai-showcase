@@ -4,7 +4,7 @@ import productivityImg from "@/assets/project-productivity.jpg";
 export const profile = {
   name: "Mohanad Ashraf Ramadan",
   title: "Machine Learning Engineer",
-  tagline: "I turn raw video and messy data into production-ready ML systems.",
+  tagline: "I build production-ready ML systems from raw, messy data.",
   location: "Cairo, Egypt",
   email: "mohand12ashraf12@gmail.com",
   phone: "+20 112 171 0632",
